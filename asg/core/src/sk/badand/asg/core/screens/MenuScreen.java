@@ -5,10 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
 import sk.badand.asg.core.CoreApp;
 
 public class MenuScreen extends GameScreen {
 
+    private VerticalGroup rootLayout = new VerticalGroup();
     private VerticalGroup menuGroup = new VerticalGroup();
     private Skin skin = new Skin(Gdx.files.internal("data/visui/uiskin.json"));
     private int selectedButton = -1;
@@ -21,22 +23,36 @@ public class MenuScreen extends GameScreen {
     public void show() {
         super.show();
 
-        menuGroup.space(5);
-        menuGroup.setPosition(200,400);
-        menuGroup.setFillParent(true);
+        rootLayout.setFillParent(true);
+        rootLayout.columnLeft();
+        rootLayout.space(20);
+        rootLayout.setPosition(200, 400);
 
-        Button button = new Button(skin);
+        menuGroup.space(5);
+        menuGroup.columnLeft();
+//        menuGroup.setOrigin(200,400);
+//        menuGroup.setFillParent(true);
+
+        Button button = new TextButton("Start", skin);
         button.setName("start");
-        button.setStyle(skin.get("blue", Button.ButtonStyle.class));
-        button.addActor(new Label("Start", skin));
+        button.setStyle(skin.get("blue", TextButton.TextButtonStyle.class));
         menuGroup.addActorAt(0, button);
         selectedButton = 0;
 
-        button = new Button(skin);
-        button.setName("end");
-        button.addActor(new Label("End", skin));
+        button = new TextButton("About", skin);
+        button.setName("about");
         menuGroup.addActorAt(1, button);
-        menuGroup.validate();
+
+        button = new TextButton("End", skin);
+        button.setName("end");
+        menuGroup.addActorAt(2, button);
+
+        Label help = new Label("Use: [UP] [DOWN] [ENTER]", skin);
+        help.setPosition(menuGroup.getX(), menuGroup.getY());
+        help.setStyle(skin.get("help", Label.LabelStyle.class));
+
+        rootLayout.addActor(menuGroup);
+        rootLayout.addActor(help);
     }
 
     @Override
@@ -44,55 +60,60 @@ public class MenuScreen extends GameScreen {
         Gdx.gl.glClearColor(0, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
-        menuGroup.act(deltaTime);
+        rootLayout.act(deltaTime);
         game.gameBatch.setProjectionMatrix(camera.combined);
 
         game.gameBatch.begin();
-        menuGroup.draw(game.gameBatch, 1f);
+        rootLayout.draw(game.gameBatch, 1f);
         game.gameBatch.end();
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        Button button = null;
+        int newIndex = 0;
         switch (keycode) {
             case Input.Keys.LEFT:
                 break;
             case Input.Keys.RIGHT:
                 break;
             case Input.Keys.UP:
-                button = (Button) menuGroup.getChild(selectedButton);
-                button.setStyle(skin.get("default", Button.ButtonStyle.class));
                 if (selectedButton == 0) {
-                    selectedButton = menuGroup.getChildren().size - 1;
+                    newIndex = menuGroup.getChildren().size - 1;
                 } else {
-                    selectedButton--;
+                    newIndex = selectedButton - 1;
                 }
-                button = (Button) menuGroup.getChild(selectedButton);
-                button.setStyle(skin.get("blue", Button.ButtonStyle.class));
+                setSelectedButton(newIndex);
                 break;
             case Input.Keys.DOWN:
-                button = (Button) menuGroup.getChild(selectedButton);
-                button.setStyle(skin.get("default", Button.ButtonStyle.class));
                 if (selectedButton == menuGroup.getChildren().size - 1) {
-                    selectedButton = 0;
+                    newIndex = 0;
                 } else {
-                    selectedButton++;
+                    newIndex = selectedButton + 1;
                 }
-                button = (Button) menuGroup.getChild(selectedButton);
-                button.setStyle(skin.get("blue", Button.ButtonStyle.class));
+                setSelectedButton(newIndex);
                 break;
             case Input.Keys.ENTER:
 
-                button = (Button) menuGroup.getChild(selectedButton);
+                Button button = (Button) menuGroup.getChild(selectedButton);
                 if (button.getName().equalsIgnoreCase("start")) {
                     game.setScreen(new WorldScreen(game));
-                } else {
+                } else if (button.getName().equalsIgnoreCase("end")) {
                     Gdx.app.exit();
                 }
                 break;
             default:
         }
         return false;
+    }
+
+    private void setSelectedButton(int newButtonIndex) {
+        setButtonStyle("default", (Button) menuGroup.getChild(selectedButton));
+
+        selectedButton = newButtonIndex;
+        setButtonStyle("blue", (Button) menuGroup.getChild(selectedButton));
+    }
+
+    private void setButtonStyle(String styleName, Button button) {
+        button.setStyle(skin.get(styleName, TextButton.TextButtonStyle.class));
     }
 }

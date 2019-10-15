@@ -9,7 +9,7 @@ com.badlogic.gdx.graphics.Color: {
 	green: {a: 1, b: 0, g: 1, r: 0 },
 	red: {a: 1, b: 0, g: 0, r: 1 },
 	blue: {a: 1, b: 1, g: 0, r: 0 },
-	grey: {a: 1, b: 0.32, g: 0.32, r: 0.32 },
+	grey: {a: 1, b: 0.22, g: 0.22, r: 0.22 },
 	vis-blue: {a: 1, b: 0.886, g: 0.631, r: 0.105 },
 	vis-red: {a: 1, b: 0.047, g: 0, r: 0.862 },
 	menuitem: {a: 1, b: 0.65, g: 0.65, r: 0.65 },
@@ -57,7 +57,9 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: {font: default-font, fontColor: white },
 	link-label: {fontColor: link-label, font: default-font },
 	small: {font: small-font, fontColor: white },
-	menuitem-shortcut: {font: default-font, fontColor: menuitem }
+	menuitem: {font: default-font, fontColor: menuitem },
+	menuitem-shortcut: {font: default-font, fontColor: menuitem },
+	help: {font: small-font, fontColor: grey }
 },
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {font: default-font, fontColor: white, disabledFontColor: grey, selection: selection, background: textfield, cursor: cursor, messageFont: default-font, messageFontColor: grey },
